@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  airbox-db:
+    image: mongo:latest
+    restart: always
+    container_name: airbox-db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    ports:
+      - 27017:27017
+    volumes:
+      - dbdata:/data/mongodb
+
+volumes:
+  dbdata:

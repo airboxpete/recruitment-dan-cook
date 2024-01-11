@@ -1,0 +1,129 @@
+openapi: 3.0.1
+info:
+  title: Airbox Task Manager APIs
+  description: APIs to manage task creation and task retrieval by client devices
+  version: '1.0'
+servers:
+  - url: https://api.airboxsystems.com/taskmanager/v1
+    description: Provide task management functionalities
+paths:
+  /tasks:
+    get:
+      summary: 'endpoint to get all the tasks'
+      tags:
+        - endpoints
+      operationId: readAllTasks
+      responses:
+        201:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/task'
+    post:
+      summary: endpoint to create a set of tasks
+      tags:
+        - endpoints
+      operationId: postTaskCreation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/task'
+      responses:
+        201:
+          description: Created
+  /tasks/{taskId}/:
+    get:
+      summary: Get task details
+      tags:
+        - endpoints
+      parameters:
+        - name: taskId
+          in: path
+          description: the task Id
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/task'
+    put:
+      summary: endpoint to update an existing task
+      tags:
+        - endpoints
+      operationId: updateTask
+      parameters:
+        - name: taskId
+          in: path
+          description: the task Id
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/task'
+      responses:
+        201:
+          description: Updated
+    delete:
+      summary: endpoint to delete an existing task
+      tags:
+        - endpoints
+      operationId: deleteTask
+      parameters:
+        - name: taskId
+          in: path
+          description: the task Id
+          required: true
+          style: simple
+          explode: false
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Deleted
+components:
+  schemas:
+    task:
+      type: object
+      properties:
+        taskId:
+          type: integer
+          format: int64
+          description: The Task Id used internally
+        priority:
+          type: string
+          enum: [UNASSIGNED, LOW, MEDIUM, HIGH]
+          description: The priority given to the task
+        taskStatus:
+          type: string
+          description: The task status
+        assignedto:
+          type: string
+          description: The user id associated with the task
+        tasksummary:
+          type: string
+          maxLength: 255
+          description: a short summary to be displayed in task lists
+  securitySchemes:
+    application:
+      type: openIdConnect
+      openIdConnectUrl: http://example.com/someform/of/token
